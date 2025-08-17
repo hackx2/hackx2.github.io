@@ -94,6 +94,18 @@ function rgbToHex(r, g, b) {
 
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
+function hex2rgb(hex_color) {
+  if (typeof hex_color !== "string") return { r: 0, g: 0, b: 0 };
+  hex_color = hex_color.trim().replace(/^#/, "");
+  if (hex_color.length === 3) {
+    hex_color = hex_color.split("").map(c => c + c).join("");
+  }
+  if (hex_color.length !== 6) return { r: 0, g: 0, b: 0 };
+  const r = parseInt(hex_color.substring(0, 2), 16);
+  const g = parseInt(hex_color.substring(2, 4), 16);
+  const b = parseInt(hex_color.substring(4, 6), 16);
+  return { r, g, b };
+}
 
 /**
  * Convert Psych JSON to Codename Engine XML.
@@ -210,7 +222,7 @@ async function cneToPsych(xmlText) {
   const camX = parseFloat(character.getAttribute("camX")) || 0;
   const camY = parseFloat(character.getAttribute("camY")) || 0;
   const scale = parseFloat(character.getAttribute("scale")) || 1;
-
+  const _color = character.getAttribute("color") || "#ffffffff";
   const antialiasingAttr = character.getAttribute("antialiasing");
   const no_antialiasing =
     antialiasingAttr !== null
@@ -245,10 +257,9 @@ async function cneToPsych(xmlText) {
           }
         }
       }
-
       return {
-        anim: el.getAttribute("name"),
-        name: el.getAttribute("anim"),
+        anim: el.getAttribute("anim"),
+        name: el.getAttribute("name"),
         fps: parseInt(el.getAttribute("fps")) || 24,
         loop: el.getAttribute("loop") === "true",
         offsets: [
@@ -261,8 +272,9 @@ async function cneToPsych(xmlText) {
   );
 
   log("Building Psych JSON object...", LogType.INFORMATION);
+   var healthbar_colors = hex2rgb(_color);
+
   const psychObj = {
-    converter: WATERMARK.json,
     animations,
     no_antialiasing,
     position: [posX, posY],
@@ -270,9 +282,10 @@ async function cneToPsych(xmlText) {
     sing_duration,
     flip_x,
     scale,
-    image: "",
-    healthicon: "",
-    healthbar_colors: [],
+    image: character.getAttribute("sprite") ?? "",
+    healthicon: character.getAttribute("icon") ?? "",
+    healthbar_colors: [healthbar_colors.r, healthbar_colors.g, healthbar_colors.b],
+    __converter__: WATERMARK.json
   };
 
   log("Conversion to Psych JSON complete.", LogType.SUCCESS);

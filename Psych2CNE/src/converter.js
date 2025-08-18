@@ -124,7 +124,7 @@ async function psychToCNE(json, charTag) {
   out += `<character ${charTag}`;
   out += ` icon="${String(json.healthicon)}"`;
   out += ` color="${String(covertedLOL)}"`;
-  out += ` sprite="${String(json.image)}"`;
+  out += ` sprite="${String(json.image).replace("characters/", "")}"`;
   out += ` flipX="${String(json.flip_x).toLowerCase()}"`;
   out += ` holdTime="${json.sing_duration}"`;
 

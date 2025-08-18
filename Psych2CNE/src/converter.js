@@ -134,9 +134,9 @@ async function psychToCNE(json, charTag) {
   log(`Position set to x=${x}, y=${y}`, LogType.INFORMATION);
 
   const [camX, camY] = json.camera_position;
-  if (camX !== 0) out += ` camX="${camX}"`;
-  if (camY !== 0) out += ` camY="${camY}"`;
-  log(`Camera position set to camX=${camX}, camY=${camY}`, LogType.INFORMATION);
+  if (camX !== 0) out += ` camx="${camX}"`;
+  if (camY !== 0) out += ` camy="${camY}"`;
+  log(`Camera position set to camx=${camX}, camx=${camY}`, LogType.INFORMATION);
 
   if (json.scale !== 1) out += ` scale="${json.scale}"`;
   if (json.no_antialiasing !== false) {

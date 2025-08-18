@@ -1,3 +1,6 @@
+//import {format_xml} from "./formatter";
+
+
 (function(){
 /** @type {{ xml: string; json: string }} */
 const WATERMARK = {
@@ -59,25 +62,6 @@ function log(msg, type = LogType.INFORMATION) {
 
 log("Welcome!!!", LogType.SUCCESS);
 
-/**
- * Pretty prints XML string with 2-space indentation.
- * @param {string} xml
- * @returns {string}
- */
-function prettyFormatXML(xml) {
-  const PADDING = "  ";
-  const lines = xml.replace(/>\s*</g, ">\n<").split("\n");
-  let indent = 0;
-
-  return lines
-    .map((line) => {
-      if (/^<\/\w/.test(line)) indent--;
-      const formatted = PADDING.repeat(Math.max(indent, 0)) + line;
-      if (/^<\w[^>]*[^/]?>/.test(line)) indent++;
-      return formatted;
-    })
-    .join("\n");
-}
 
 /**
  * Converts RGB components to a hex color string.
@@ -188,9 +172,8 @@ async function psychToCNE(json, charTag) {
   out += "</character>\n";
 
   log("Finished conversion to CNE XML. Formatting output...", LogType.SUCCESS);
-  return formatXml(out);
+  return format_xml(out);
 }
-
 
 /**
  * Convert Codename Engine XML to Psych JSON.
@@ -291,28 +274,6 @@ async function cneToPsych(xmlText) {
   log("Conversion to Psych JSON complete.", LogType.SUCCESS);
   const prettyJson = JSON.stringify(psychObj, null, 2);
   return prettyJson;
-}
-
-/**
- * Format XML string with indentation.
- * @param {string} xml
- * @returns {string}
- */
-function formatXml(xml) {
-  const PADDING = "  ";
-  const reg = /(>)(<)(\/*)/g;
-  let pad = 0;
-  xml = xml.replace(reg, "$1\r\n$2$3");
-  return xml
-    .split("\r\n")
-    .map((node) => {
-      let indent = 0;
-      if (node.match(/^<\/\w/)) indent = --pad;
-      else if (node.match(/^<\w([^>]*[^/])?>.*$/)) indent = pad++;
-      else indent = pad;
-      return PADDING.repeat(indent) + node;
-    })
-    .join("\r\n");
 }
 
 /** Converts a loaded file based on conversionType */

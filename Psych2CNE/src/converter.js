@@ -2,11 +2,8 @@
 
 
 (function(){
-/** @type {{ xml: string; json: string }} */
-const WATERMARK = {
-  xml: "<!-- Converted using Psych2CNE hackx2.github.io/psych2cne -->",
-  json: "Converted using Psych2CNE hackx2.github.io/psych2cne",
-};
+/** @type {string} */
+const WATERMARK = "Converted using Psych2CNE hackx2.github.io/Psych2CNE/";
 
 /** @typedef {{ label: string; color: string }} LogTypeObj */
 
@@ -104,7 +101,7 @@ async function psychToCNE(json, charTag) {
   const covertedLOL = rgbToHex(blah[0], blah[1], blah[2]);
   log(`Converted healthbar color RGB(${blah.join(", ")}) to hex ${covertedLOL}`, LogType.INFORMATION);
 
-  let out = `<!DOCTYPE codename-engine-character>\n${WATERMARK.xml}\n`;
+  let out = `<!DOCTYPE codename-engine-character>\n<!-- ${WATERMARK} -->\n`;
   out += `<character ${charTag}`;
   out += ` icon="${String(json.healthicon)}"`;
   out += ` color="${String(covertedLOL)}"`;
@@ -268,7 +265,7 @@ async function cneToPsych(xmlText) {
     image: character.getAttribute("sprite") ?? "",
     healthicon: character.getAttribute("icon") ?? "",
     healthbar_colors: [healthbar_colors.r, healthbar_colors.g, healthbar_colors.b],
-    __converter__: WATERMARK.json
+    __converter__: WATERMARK
   };
 
   log("Conversion to Psych JSON complete.", LogType.SUCCESS);
